@@ -2,6 +2,7 @@ package com.kiran.user.management.service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -14,9 +15,10 @@ import java.util.UUID;
 
 @Component
 public class TokenGenerator {
+    @Value("${server.secret.key}")
+    private String secret;
 
     public String generateJsonWebToken() {
-        String secret = "bsdfSES34wfsdgsdfTDSD32dfsddDDerQSNCK36SOWEK5354fdkdf4";
 
         Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret),
                 SignatureAlgorithm.HS256.getJcaName());

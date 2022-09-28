@@ -29,8 +29,10 @@ public class User {
     public long getId() {
         return id;
     }
-    public void setId(long id) {
+
+    public User setId(long id) {
         this.id = id;
+        return this;
     }
 
     @Column(name = "name", nullable = false)
@@ -47,8 +49,10 @@ public class User {
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
+
+    public User setPassword(String password) {
         this.password = password;
+        return this;
     }
 
     @Column(name = "email_address", nullable = false)
@@ -56,8 +60,9 @@ public class User {
         return emailId;
     }
 
-    public void setEmailId(String emailId) {
+    public User setEmailId(String emailId) {
         this.emailId = emailId;
+        return this;
     }
 
     @Column(name = "last_login", nullable = true)
@@ -65,8 +70,9 @@ public class User {
         return lastLoginTime;
     }
 
-    public void setLastLoginTime(Instant lastLoginTime) {
+    public User setLastLoginTime(Instant lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
+        return this;
     }
 
     @Override
