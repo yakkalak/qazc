@@ -2,7 +2,6 @@ package com.kiran.user.management.controller;
 
 import com.kiran.user.management.exception.ResourceNotFoundException;
 import com.kiran.user.management.model.User;
-import com.kiran.user.management.service.TokenGenerator;
 import com.kiran.user.management.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,11 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     @Mock
-    private TokenGenerator tokenGenerator;
-
-    @Mock
     private UserService userService;
-
 
     @InjectMocks
     private UserController userController;
@@ -50,7 +44,7 @@ class UserControllerTest {
     void getAllUsers() throws Exception {
         when(userService.findAll()).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(get("/user-management/users").header(HttpHeaders.AUTHORIZATION,""))
+        mockMvc.perform(get("/user-management/users"))
                 .andExpect(status().isOk());
 
         verify(userService).findAll();
@@ -82,31 +76,29 @@ class UserControllerTest {
         User user = createTestUser();
         when(userService.save(any(User.class))).thenReturn(user);
         mockMvc.perform(post("/user-management/users/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"id\":\"100\",\"name\":\"test\",\"emailId\":\"test\",\"password\":\"passcode\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"100\",\"name\":\"test\",\"emailId\":\"test\",\"password\":\"passcode\"}"))
                 .andExpect(status().isOk());
-               // .andExpect(status().isOk());
-        verify(userService).save(user);
+
+        verify(userService).save(any(User.class));
     }
 
     @Test
     void updateUser() throws Exception {
         User user = createTestUser();
         when(userService.findById(user.getId())).thenReturn(user);
-        mockMvc.perform(put("/user-management/users/2"))
+
+        mockMvc.perform(put("/user-management/users/123456")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"test\",\"password\":\"passcode\"}"))
                 .andExpect(status().isOk());
+
         verify(userService).save(user);
     }
 
     @Test
     void deleteUser() throws Exception {
-        String jwtToken = "";
-        when(tokenGenerator.generateJsonWebToken()).thenReturn(jwtToken);
-        mockMvc.perform(delete("/user-management/users/2")
-                                .contentType(jwtToken)
-                                .content(jwtToken)
-                                .header(HttpHeaders.AUTHORIZATION, jwtToken));
-                //.andExpect(status().isOk());
+        mockMvc.perform(delete("/user-management/users/2")).andExpect(status().isOk());
 
         verify(userService).delete(2L);
     }

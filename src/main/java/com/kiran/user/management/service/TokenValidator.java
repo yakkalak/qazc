@@ -11,6 +11,7 @@ import java.util.Base64;
 
 @Component
 public class TokenValidator {
+
     @Value("${server.secret.key}")
     private String secret;
 
@@ -35,7 +36,7 @@ public class TokenValidator {
      * @param jwtToken token to be validated
      * @return true if successful otherwise false
      */
-    private boolean validateToken(String jwtToken) {
+    public boolean validateToken(String jwtToken) {
         Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret),
                 SignatureAlgorithm.HS256.getJcaName());
         try {

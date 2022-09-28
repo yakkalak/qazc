@@ -15,13 +15,12 @@ import java.util.UUID;
 
 @Component
 public class TokenGenerator {
+
     @Value("${server.secret.key}")
     private String secret;
 
     public String generateJsonWebToken() {
-
-        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret),
-                SignatureAlgorithm.HS256.getJcaName());
+        Key hmacKey = new SecretKeySpec(Base64.getDecoder().decode(secret), SignatureAlgorithm.HS256.getJcaName());
 
         Instant now = Instant.now();
 
@@ -29,7 +28,7 @@ public class TokenGenerator {
                 .setSubject("userToken")
                 .setId(UUID.randomUUID().toString())
                 .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(15l, ChronoUnit.MINUTES)))
+                .setExpiration(Date.from(now.plus(15L, ChronoUnit.MINUTES))) // token expires in 15 mins
                 .signWith(hmacKey)
                 .compact();
     }

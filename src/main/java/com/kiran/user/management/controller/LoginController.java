@@ -27,16 +27,19 @@ public class LoginController {
     }
 
     /**
-     * Handles login request. Logs in if user supplied passord
+     * Handles login request. Logs in if user supplied password
      * and username matches. Updates last login time ones authenticated.
-     * @return a Token after successfull validation
+     *
+     * @return a Token after successful validation
      * @throws ResourceNotFoundException throws customized exception
      */
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginUserDto user) throws ResourceNotFoundException {
         User loggedInUser = userService.findByEmailIdAndPassword(user.getEmailId(), user.getPassword());
+
         loggedInUser.setLastLoginTime(Instant.now());
         userService.save(loggedInUser);
+
         return tokenGenerator.generateJsonWebToken();
     }
 }
